@@ -12,7 +12,8 @@ angular
   .module('firebaseAngularDemoApp', [
     'ngAnimate',
     'ngResource',
-    'ngRoute'
+    'ngRoute',
+    'firebase'
   ])
   .config(function ($routeProvider) {
     $routeProvider

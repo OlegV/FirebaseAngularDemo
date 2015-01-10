@@ -8,13 +8,12 @@
  * Controller of the firebaseAngularDemoApp
  */
 angular.module('firebaseAngularDemoApp')
-  .controller('MainCtrl', function ($scope) {
+  .controller('MainCtrl', [ '$scope', '$firebase', function ($scope, $firebase) {
     var author = 'Me';
-    
-    $scope.messages = [
-		{text: 'Message 1', datestamp: new Date(), author: 'Misko'},
-		{text: 'Message from Yo', datestamp: new Date(), author: 'Tom'}
-    ];
+    var refMessages = new Firebase('https://crackling-fire-2244.firebaseio.com/messages');
+    var syncMessages = $firebase(refMessages);
+
+    $scope.messages = syncMessages.$asArray();
 
     $scope.users = [
     	{username: 'Misko', img:''},
@@ -22,15 +21,16 @@ angular.module('firebaseAngularDemoApp')
     	{username: 'Tom', img:''},		
     ];
 
-    $scope.addMessage = function(){
+    $scope.addMessage = function(text){
     	if (!$scope.newMessage) { return; }
-    	$scope.messages.push(
+    	$scope.messages.$add(
     		{	
     			datestamp : new Date(),
     			author : author,
-    			text : $scope.newMessage
+    			text : text
     		}
     	);
     	$scope.newMessage = '';
     };
-  });
+
+  }]);
