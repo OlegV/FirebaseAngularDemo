@@ -1,0 +1,9 @@
+{
+  "firebase": "crackling-fire-2244",
+  "public": "./dist",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}
