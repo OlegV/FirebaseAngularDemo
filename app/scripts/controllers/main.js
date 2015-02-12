@@ -8,15 +8,17 @@
  * Controller of the firebaseAngularDemoApp
  */
 angular.module('firebaseAngularDemoApp')
-  .controller('MainCtrl', [ '$scope', '$firebase', 
-  	function ($scope, $firebase) {
-		
+  .controller('MainCtrl', [ '$scope', '$firebase', '$firebaseAuth',
+  	function ($scope, $firebase, $firebaseAuth) {
+    
+    var ref = new Firebase('https://crackling-fire-2244.firebaseio.com/');	
     var refMessages = new Firebase('https://crackling-fire-2244.firebaseio.com/messages');
     var refUsers = new Firebase('https://crackling-fire-2244.firebaseio.com/users');
     var currentUser;
 
     var syncMessages = $firebase(refMessages);
     var syncUsers = $firebase(refUsers);
+    var auth = $firebaseAuth(ref);
 
     $scope.messages = syncMessages.$asArray();
     $scope.users = syncUsers.$asArray();
@@ -61,5 +63,22 @@ angular.module('firebaseAngularDemoApp')
     function updateUser (userRef, name) {
     	userRef.update({username : name });
     }
+
+    $scope.authenticate = function (provider){
+        auth.$authWithOAuthPopup(provider).then(function(authData) {
+            console.log('Provider '+provider+': Logged in as:', authData);
+            setAuthUser(authData);
+        }).catch(function(error) {
+            console.error('Authentication failed: ', error);
+        });
+    };
+
+    function setAuthUser(authData){
+        if (authData.auth.provider == 'facebook') {
+            $scope.author = authData.facebook.displayName;
+            $scope.saveUser();
+        }
+    }
+
 
   }]);
